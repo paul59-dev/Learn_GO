@@ -8,6 +8,10 @@ type Todo struct {
 	completed bool
 }
 
+type Toggleable interface {
+	toggle()
+}
+
 func (t *Todo) toggle() {
 	t.completed = !t.completed
 }
@@ -47,6 +51,19 @@ func main() {
 	todo := Todo{1, "Faire la cuisine", true}
 	// Method
 	todo.toggle()
+	// Interface
+	toggleTodo(&todo)
 	fmt.Printf("Struct: %#v\n", todo)
 
+	arrayTodo := []Toggleable{
+		&Todo{1, "Faire la cuisine", true},
+		&Todo{1, "Faire la cuisine", true},
+		&Todo{1, "Faire la cuisine", true},
+	}
+	fmt.Printf("Interface: %#v\n", arrayTodo)
+
+}
+
+func toggleTodo(t Toggleable) {
+	t.toggle()
 }
