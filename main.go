@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
 
 type Todo struct {
 	id        int
@@ -14,6 +18,12 @@ type Toggleable interface {
 
 func (t *Todo) toggle() {
 	t.completed = !t.completed
+}
+
+type TodoApi struct {
+	Id        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
 }
 
 func main() {
@@ -61,6 +71,25 @@ func main() {
 		&Todo{1, "Faire la cuisine", true},
 	}
 	fmt.Printf("Interface: %#v\n", arrayTodo)
+
+	// Call Api ans json parser
+	r, err := http.Get("https://jsonplaceholder.typicode.com/todos?_limit=3")
+	if err != nil { // try/catch but GO force the developpeur a make implicite error it's better for find the error
+		fmt.Printf("Impossible de contacter le server %s", err.Error())
+		return
+	}
+
+	defer r.Body.Close() // close the fonction after execution of principal function (main())
+	var todos []TodoApi
+	err = json.NewDecoder(r.Body).Decode(&todos)
+	if err != nil { // try/catch but GO force the developpeur a make implicite error it's better for find the error
+		fmt.Printf("Impossible de parser la reponse du server %s", err.Error())
+		return
+	}
+	if len(todos) > 0 {
+		fmt.Printf("%#v\n", todos[0].Title)
+	}
+	fmt.Printf("%#v\n", todos)
 
 }
 
