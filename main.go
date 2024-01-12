@@ -72,27 +72,48 @@ func main() {
 	}
 	fmt.Printf("Interface: %#v\n", arrayTodo)
 
+	// Goroutine
+	ch := make(chan string)   // chanel content the responce
+	errCh := make(chan error) // chanel content the error
+	go func() {
+		title, err := fetchTodoTitle()
+		if err != nil {
+			errCh <- err
+		} else {
+			ch <- title
+		}
+	}()
+	fmt.Println("Hello")
+	defer close(ch)
+	defer close(errCh)
+	select {
+	case err := <-errCh:
+		panic(err)
+	case title := <-ch:
+		fmt.Printf("Titre de la todo : %s", title)
+	}
+}
+
+func toggleTodo(t Toggleable) {
+	t.toggle()
+}
+
+func fetchTodoTitle() (string, error) { // () => argument, (string, error) => types of retrun
 	// Call Api ans json parser
 	r, err := http.Get("https://jsonplaceholder.typicode.com/todos?_limit=3")
 	if err != nil { // try/catch but GO force the developpeur a make implicite error it's better for find the error
-		fmt.Printf("Impossible de contacter le server %s", err.Error())
-		return
+		return "", fmt.Errorf("impossible de contacter le server %w", err) // retrun string and error
 	}
 
 	defer r.Body.Close() // close the fonction after execution of principal function (main())
 	var todos []TodoApi
 	err = json.NewDecoder(r.Body).Decode(&todos)
 	if err != nil { // try/catch but GO force the developpeur a make implicite error it's better for find the error
-		fmt.Printf("Impossible de parser la reponse du server %s", err.Error())
-		return
+		return "", fmt.Errorf("impossible de parser la reponse du server %s", err)
 	}
 	if len(todos) > 0 {
-		fmt.Printf("%#v\n", todos[0].Title)
+		return todos[0].Title, nil
 	}
-	fmt.Printf("%#v\n", todos)
 
-}
-
-func toggleTodo(t Toggleable) {
-	t.toggle()
+	return "", fmt.Errorf("aucune todo trouvé par le server")
 }
