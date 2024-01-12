@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/fatih/color"
 )
 
 type Todo struct {
@@ -93,9 +95,16 @@ func main() {
 		fmt.Printf("Titre de la todo : %s", title)
 	}
 
+	// Externanl library
+	color.Cyan("\nLe serveuur est démarré sur http://localhost:8000")
+	// Before start de go run ., he run go get for install dependency
+
 	// Web server
 	http.HandleFunc("/", homeHandler)
-	http.ListenAndServe(":8000", nil)
+	err := http.ListenAndServe(":8000", nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
