@@ -23,4 +23,14 @@ func main() {
 
 	e := append(d, 4) // push new element in the slice
 	fmt.Printf("Array push: %#v : %#v\n", d, e)
+
+	// Objects and maps
+	maps := map[string]string{
+		"title":       "Faire le tutoriel",
+		"description": "Parler le golang",
+	}
+	fmt.Printf("Map: %#v : %#v\n", maps, maps["title"])
+	maps["title"] = "Paul"
+	fmt.Printf("Map: %#v\n", maps)
+
 }
