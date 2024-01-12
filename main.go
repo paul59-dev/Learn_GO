@@ -41,4 +41,5 @@ func main() {
 
 	// Struct
 	todo := Todo{1, "Faire la cuisine", true}
+	fmt.Printf("Struct: %#v\n", todo)
 }
