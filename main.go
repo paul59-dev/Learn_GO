@@ -92,6 +92,21 @@ func main() {
 	case title := <-ch:
 		fmt.Printf("Titre de la todo : %s", title)
 	}
+
+	// Web server
+	http.HandleFunc("/", homeHandler)
+	http.ListenAndServe(":8000", nil)
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	title, err := fetchTodoTitle()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+
+	w.Write([]byte(title))
 }
 
 func toggleTodo(t Toggleable) {
