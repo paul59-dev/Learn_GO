@@ -8,6 +8,10 @@ type Todo struct {
 	completed bool
 }
 
+func (t *Todo) toggle() {
+	t.completed = !t.completed
+}
+
 func main() {
 	var name string = "John"
 	var name2 *string = &name // => pointer to name
@@ -41,5 +45,8 @@ func main() {
 
 	// Struct
 	todo := Todo{1, "Faire la cuisine", true}
+	// Method
+	todo.toggle()
 	fmt.Printf("Struct: %#v\n", todo)
+
 }
