@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+type Todo struct {
+	id        int
+	title     string
+	completed bool
+}
+
 func main() {
 	var name string = "John"
 	var name2 *string = &name // => pointer to name
@@ -33,4 +39,6 @@ func main() {
 	maps["title"] = "Paul"
 	fmt.Printf("Map: %#v\n", maps)
 
+	// Struct
+	todo := Todo{1, "Faire la cuisine", true}
 }
